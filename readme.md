@@ -19,3 +19,26 @@ curl -o ./ubuntu/ubuntu-17.10-server-amd64.iso http://mirror.ufscar.br/ubuntu-re
 ```
 ./build.sh
 ```
+
+After build, a new folder ./output-hyperv-iso will be created with your VM. Add this VM to your hyper-v and enjoy!
+
+# Environment details and default values:
+OS: Ubuntu Server 17.10 amd64
+VM Name: ubuntu-template
+hostname: ubuntu-template
+Memory: 2048
+Disk: 21440
+SSH UserName: packer
+SSH Password: packer
+
+Tools:
+- curl
+- wget
+- htop
+- ctop
+- mc
+- nano
+- net-tools
+- docker-ce
+
+
