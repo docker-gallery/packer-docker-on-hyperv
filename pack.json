@@ -1,0 +1,54 @@
+{
+    "variables": {
+        "vm_name": "ubuntu-template",        
+        "cpu": "4",
+        "ram_size": "2048",
+        "disk_size": "21440"
+    },
+    "builders": [
+        {
+            "type": "hyperv-iso",
+            "vm_name": "{{user `vm_name`}}",
+            "guest_additions_mode": "disable",
+            "http_directory": "./",
+            "boot_wait": "5s",
+            "iso_url": "./ubuntu/ubuntu-17.10-server-amd64.iso",
+            "iso_checksum": "be2ab38bb169ed9dddc6cd142a8b9d8b",
+            "iso_checksum_type": "md5",
+            "communicator": "ssh",
+            "ssh_username": "packer",
+            "ssh_password": "packer",
+            "disk_size": "{{user `disk_size`}}",
+            "ram_size": "{{user `ram_size`}}",
+            "cpu": "{{user `cpu`}}",
+            "generation": 2,
+            "switch_name": "Externo",
+            "enable_secure_boot": false,
+            "boot_command": [
+                "<esc><wait10><esc><esc><enter><wait>",
+                "set gfxpayload=1024x768<enter>",
+                "linux /install/vmlinuz ",
+                "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/ubuntu/hyperv-taliesins.cfg ",
+                "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+                "hostname={{.Name}} ",
+                "fb=false debconf/frontend=noninteractive ",
+                "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+                "keyboard-configuration/variant=USA console-setup/ask_detect=false <enter>",
+                "initrd /install/initrd.gz<enter>",
+                "boot<enter>"
+            ],
+            "shutdown_command": "echo 'packer' | sudo -S -E shutdown -P now"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "scripts": [
+                "./scripts/01.apt-upgrade.sh",
+                "./scripts/02.tools.sh",
+                "./scripts/03.docker-install.sh",
+                "./scripts/04.docker-clear.sh"
+            ]
+        }
+    ]
+}
